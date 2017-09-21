@@ -1,9 +1,13 @@
 class Operation(object):
-    def __init__(self, probability):
-        self.probability = probability
+    def __init__(self):
+        pass
 
     def __str__(self):
-        return self.__class__.__name__
+        return '{} {}'.format(self.__class__.__name__,self.__dict__)
 
-    def perform_operation(self, img):
+    def call(self, inputs, **kwargs):
         raise RuntimeError("Illegal call to base class.")
+
+    def __call__(self, inputs, **kwargs):
+        output = self.call(inputs, **kwargs)
+        return output

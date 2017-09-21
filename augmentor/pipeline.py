@@ -1,3 +1,5 @@
+import random
+
 class Pipeline():
     def __init__(self):
         self.operations = []
@@ -13,13 +15,19 @@ class Pipeline():
         pass
 
     def add(self, operation):
-        pass
-    def sequential(self, random_order = False):
-        pass
+        self.operations.append(operation)
+        
+    def sequential(self, *args, random_order = False):
+        self.operations.append({'operations': args, 'random_order': random_order})
 
-    def status(self):
-        pass
-
+    def __str__(self):
+        lines = []
+        for each_operation in self.operations:
+            if type(each_operation) == dict:
+                lines.append('Sequential')
+            else:
+                lines.append(str(each_operation))
+        return '\n'.join(lines)
 
     def __execute(self, img):
         for operation in self.operations:
@@ -28,12 +36,13 @@ class Pipeline():
                 img = operation.perform_operation(img)
         
         return img
+
     def sample(self, n):
         """Randomly sample n data from dataflow.
         """
         # self.__execute()
         pass
-    
+
     def traverse(self, n_per = 1):
         """Traverse all data from dataflow, generate n_per augmented data from each raw data.
         """
