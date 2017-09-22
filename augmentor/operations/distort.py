@@ -103,3 +103,20 @@ class Distort(Operation):
         # return cv2.remap(img, np.array(dimensions), np.array(polygons), cv2.INTER_CUBIC)
 
         return img.transform(img.size, Image.MESH, generated_mesh, resample=Image.BICUBIC)
+
+
+class Dislocate(Operation):
+    _fields = ['scale']
+    def call(self, inputs, **kwargs):
+        def shift(m, n):
+            if n > 0:
+                return np.pad(m,((n,0)), mode='constant', constant_values=255)[:n]
+            else:
+                return np.pad(m,((0,-n)), mode='constant', constant_values=255)[-n:]
+        img = inputs
+        h, w = img.shape[:2]
+        mask = np.sin(np.arange(w) / self.scale) > 0
+        for i in range(w):
+            if mask[i]:
+                img[:,i] = shift(img[:,i], -1)
+        return img
