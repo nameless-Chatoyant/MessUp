@@ -14,31 +14,33 @@ Any iterable object
 
 # Examples
 ## Easy Way
+Feel free to use temporary instance, instances with same parameters are cached and only be created once.
 ```python
-from messup.operations import *
-for _ in range(3):
-    img = Distort(1,2,2)(img)
-    img = Blur(2,2)(img)
+from MessUp import *
+img = Dislocate((2,10))(img)
 ```
 ## Simple
 
+## Use Wrapper
+Use wrapper to create complicated and customed operations
 ```python
-from augmentor.operations import *
-from augmentor.pipeline import Pipeline
-
-p = Pipeline()
-p.add()
-p.sequential(
-    [
-
-    ],
-    True
-)
-p.add()
-print(p)
-'''Output:
-
-
-'''
+aug = WithChannels((0,1))(Blur(3))
+img_aug = aug(img)
 ```
+
+## Write an Operation
+All you need is to:
+1. write a class from Operation
+2. define all parameters
+3. write a function to handle single image.
+```python
+class Custom(Operation):
+    _fields = ['parameter1', 'parameter2']
+    def perform_on_image(self, img):
+        # write your code here
+        return res
+```
+
+
 ## Digital Docs to Natural Scenes
+

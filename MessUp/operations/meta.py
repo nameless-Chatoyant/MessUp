@@ -1,6 +1,8 @@
 import weakref
 import numpy as np
 
+from .wrapper import Sequential
+
 class Cached(type):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,18 +25,21 @@ class Operation(metaclass = Cached):
             setattr(self, name, value)
 
     def __str__(self):
-        return '{} {}'.format(self.__class__.__name__,self.__dict__)
+        return '{} {}'.format(self.__class__.__name__, self.__dict__)
 
     def draw_sample(self):
         for i in self._fields:
             print(i, getattr(self, i))
 
     def call(self, inputs, **kwargs):
-        raise RuntimeError("Illegal call to base class.")
-
-    def __call__(self, inputs, **kwargs):
         if isinstance(inputs, np.ndarray):
-            output = self.call(inputs, **kwargs)
+            output = self.perform_on_image(inputs, **kwargs)
             return output
         else:
-            return None
+            return Sequential(self, inputs)
+
+    def perform_on_image(self, img):
+        raise NotImplementedError()
+
+    def __call__(self, inputs, **kwargs):
+        return self.call(inputs, **kwargs)
