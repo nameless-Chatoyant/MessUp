@@ -26,8 +26,14 @@ class OneOf(Wrapper):
 class SomeOf(Wrapper):
     pass
 
+class WithChannels(Wrapper):
+    pass
+
 """
+
+pair = Wrap()
 x = OneOf(
 
 )(x)
+Distort()
 """
