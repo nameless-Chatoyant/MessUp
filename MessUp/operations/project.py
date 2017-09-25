@@ -33,6 +33,6 @@ class ProjectOntoCylinder(Operation):
             return np.dstack((map_x, map_y)).astype(np.int16)
         # create the LUTs for x and y coordinates
         map_xy = np.fromfunction(makeMap, img.shape[:2], dtype = np.int16)
-        img_mapped = cv2.remap(img, map_xy, None, cv2.INTER_NEAREST)
+        img_mapped = cv2.remap(img, map_xy, None, cv2.INTER_NEAREST, borderMode = cv2.BORDER_CONSTANT, borderValue = 255)
 
         return img_mapped

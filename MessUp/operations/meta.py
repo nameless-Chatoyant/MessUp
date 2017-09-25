@@ -2,13 +2,14 @@ import weakref
 import numpy as np
 
 from .wrapper import Sequential
+from itertools import zip_longest
 
 class Cached(type):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__cache = weakref.WeakValueDictionary()
     
-    def __call__(self, *args):
+    def __call__(self, *args, **kwargs):
         if args in self.__cache:
             return self.__cache[args]
         else:
@@ -18,10 +19,10 @@ class Cached(type):
 
 class Operation(metaclass = Cached):
     _fields = []
-    def __init__(self, *args):
-        if len(args) != len(self._fields):
-            raise TypeError('Expected {} arguments'.format(len(self._fields)))
-        for name, value in zip(self._fields, args):
+    def __init__(self, *args, **kwargs):
+        # if len(args) != len(self._fields):
+        #     raise TypeError('Expected {} arguments'.format(len(self._fields)))
+        for name, value in zip_longest(self._fields, args):
             setattr(self, name, value)
 
     def __str__(self):

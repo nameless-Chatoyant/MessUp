@@ -1,4 +1,3 @@
-# from .meta import Cached
 import weakref
 class Cached(type):
     def __init__(self, *args, **kwargs):
@@ -20,6 +19,8 @@ class Wrapper(metaclass = Cached):
         self.operations = args
     def call(self, img):
         raise RuntimeError("Illegal call to a Wrapper instance.")
+    def perform_on_image(self, img):
+        pass
     def __call__(self,inputs):
         pass
     def __str__(self):
