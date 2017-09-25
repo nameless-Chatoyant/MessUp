@@ -20,7 +20,7 @@ class Wrapper(metaclass = Cached):
     def call(self, img):
         raise RuntimeError("Illegal call to a Wrapper instance.")
     def perform_on_image(self, img):
-        pass
+        raise NotImplementedError()
     def __call__(self,inputs):
         pass
     def __str__(self):
@@ -32,9 +32,6 @@ class Wrapper(metaclass = Cached):
 class Sequential(Wrapper):
     _f = {'random_order': False}
     
-
-    
-
 class Sometimes(Wrapper):
     pass
 
@@ -46,12 +43,3 @@ class SomeOf(Wrapper):
 
 class WithChannels(Wrapper):
     pass
-
-"""
-
-pair = Wrap()
-x = OneOf(
-
-)(x)
-Distort()
-"""

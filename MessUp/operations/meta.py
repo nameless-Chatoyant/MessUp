@@ -1,8 +1,9 @@
 import weakref
 import numpy as np
 
-from .wrapper import Sequential
+from wrapper import Sequential
 from itertools import zip_longest
+from collections import ChainMap
 
 class Cached(type):
     def __init__(self, *args, **kwargs):
@@ -10,19 +11,20 @@ class Cached(type):
         self.__cache = weakref.WeakValueDictionary()
     
     def __call__(self, *args, **kwargs):
+        # TODO: kwargs
         if args in self.__cache:
             return self.__cache[args]
         else:
-            obj = super().__call__(*args)
+            obj = super().__call__(*args, **kwargs)
             self.__cache[args] = obj
             return obj
 
 class Operation(metaclass = Cached):
-    _fields = []
+    _fields = ['A', 'B', 'C']
     def __init__(self, *args, **kwargs):
-        # if len(args) != len(self._fields):
-        #     raise TypeError('Expected {} arguments'.format(len(self._fields)))
-        for name, value in zip_longest(self._fields, args):
+        if len(self._fields) < len(args):
+            raise RuntimeError()
+        for name, value in ChainMap(dict(zip_longest(self._fields, args)), kwargs).items():
             setattr(self, name, value)
 
     def __str__(self):
