@@ -4,7 +4,7 @@ import numpy as np
 from .wrapper import Sequential
 from itertools import zip_longest
 from collections import ChainMap
-
+import random
 class Cached(type):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -36,6 +36,10 @@ class Operation(metaclass = Cached):
 
     def call(self, inputs, **kwargs):
         if isinstance(inputs, np.ndarray):
+            for parameter in self._fields:
+                if isinstance(self.__dict__[parameter], tuple):
+                    self.__dict__[parameter] = random.randint(self.__dict__[parameter][0], self.__dict__[parameter][1])
+                print(self.__dict__[parameter])
             output = self.perform_on_image(inputs, **kwargs)
             return output
         else:
