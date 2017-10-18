@@ -1,7 +1,7 @@
 import weakref
 import numpy as np
 
-from wrapper import Sequential
+from .wrapper import Sequential
 from itertools import zip_longest
 from collections import ChainMap
 

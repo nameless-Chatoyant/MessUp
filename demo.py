@@ -1,23 +1,10 @@
 from MessUp.operations import *
 from scipy import misc
+import os
 
-
-img = misc.imread('test.png')
-img = Resize((30, None))(img)
-img = Dislocate(2)(img)
-h, w = img.shape[:2]
-img = ProjectOntoCylinder((w // 2, h // 2), 500)(img)
-mask = img == 255
-each_column = mask.all(0)
-x_start = 0
-x_end = 0
-for i in range(w):
-    if not each_column[i]:
-        x_start = i
-        break
-for i in range(1,w):
-    if not each_column[-i]:
-        x_end = w - i + 1
-        break
-img = img[:,x_start:x_end]
-misc.imsave('output.png', img)
+icons = [os.path.join(dirpath, filename) for dirpath, dirname, filenames in os.walk('icons') for filename in filenames]
+for i in icons:
+    name = i.split('/')[-1]
+    img = misc.imread(i)
+    img = Distort(3,3,10)(img)
+    misc.imsave('icons_out/'+name, img)
