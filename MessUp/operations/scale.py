@@ -19,6 +19,6 @@ class Resize(Operation):
                 res = cv2.resize(img, None, fx=scale, fy=scale)
             else:
                 print('?????')
-            return res
         else:
-            pass
+            res = cv2.resize(img, None, fx = self.fx, fy = self.fy)
+        return res
