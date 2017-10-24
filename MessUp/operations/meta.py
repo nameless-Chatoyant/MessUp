@@ -20,14 +20,17 @@ class Cached(type):
             return obj
 
 class Operation(metaclass = Cached):
-    _fields = []
-    _parameters = []
-    _random_parameters = []
-    def __init__(self, *args, **kwargs):
-        if len(self._fields) < len(args):
-            raise RuntimeError()
-        for name, value in ChainMap(dict(zip_longest(self._fields, args)), kwargs).items():
-            setattr(self, name, value)
+    _parameters = {}
+    _random_parameters = {}
+    def __init__(self, **kwargs):
+        for parameter, value in kwargs.items():
+            if parameter.startswith('r_'):
+                self._random_parameters[parameter[2:]] = value
+            else:
+                self._parameters[parameter] = value
+        # for name, value in ChainMap(dict(zip_longest(self._fields, args)), kwargs).items():
+        #     setattr(self, name, value)
+        print(self._parameters, self._random_parameters)
 
     def __str__(self):
         return '{} {}'.format(self.__class__.__name__, self.__dict__)
@@ -36,15 +39,18 @@ class Operation(metaclass = Cached):
         for i in self._fields:
             print(i, getattr(self, i))
 
+    def _instantiate_parameters(self):
+        for parameter, value in self._parameters.items():
+            setattr(self, parameter, value)
+        for parameter, value in self._random_parameters.items():
+            if isinstance(value[0], float):
+                setattr(self, parameter, random.uniform(value[0], value[1]))
+            else:
+                setattr(self, parameter, random.randint(value[0], value[1]))
+
     def call(self, inputs, **kwargs):
         if isinstance(inputs, np.ndarray):
-            for parameter in self._fields:
-                if isinstance(self.__dict__[parameter], tuple):
-                    if isinstance(self.__dict__[parameter][0], float):
-                        self.__dict__[parameter] = random.uniform(self.__dict__[parameter][0], self.__dict__[parameter][1])
-                    else:
-                        self.__dict__[parameter] = random.randint(self.__dict__[parameter][0], self.__dict__[parameter][1])
-                print(self.__dict__[parameter])
+            self._instantiate_parameters()
             output = self.perform_on_image(inputs, **kwargs)
             return output
         else:
