@@ -20,7 +20,9 @@ class Cached(type):
             return obj
 
 class Operation(metaclass = Cached):
-    _fields = ['A', 'B', 'C']
+    _fields = []
+    _parameters = []
+    _random_parameters = []
     def __init__(self, *args, **kwargs):
         if len(self._fields) < len(args):
             raise RuntimeError()
