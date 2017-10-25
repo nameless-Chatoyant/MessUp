@@ -10,5 +10,4 @@ class Rotate(Operation):
         img_pil = Image.fromarray(img)
         after = img_pil.rotate(self.degree)
         res = np.array(after)
-        print((res == img).all())
         return res
