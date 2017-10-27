@@ -8,7 +8,7 @@ class Crop(Operation):
     _fields = ['crop_px', 'crop_percent', 'center', 'keepsize']
     def perform_on_image(self, img):
         h, w = img.shape[:2]
-        if h < self.crop_px or w < self.crop_px:
+        if h < self.crop_px[0] or w < self.crop_px[1]:
             raise RuntimeError('Shape of cropping image must be larger than `crop_px`, ({}, {}) < ({}, {})'.format(h, w, *self.crop_px))
         crop_h, crop_w = self.crop_px
 
