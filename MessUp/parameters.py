@@ -20,3 +20,8 @@ class StochasticParameter():
         samples = self._draw_samples(size, random_state)
         ia.forward_random_state(random_state)
         return samples
+
+
+# class OneOf
+
+# class SomeOf

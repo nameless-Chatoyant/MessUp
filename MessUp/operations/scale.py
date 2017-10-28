@@ -1,5 +1,7 @@
-from .meta import Operation
-
+try:
+    from .meta import Operation
+except Exception:
+    from meta import Operation
 import cv2
 import numpy as np
 

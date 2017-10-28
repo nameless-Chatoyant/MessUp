@@ -1,7 +1,9 @@
 import weakref
 import numpy as np
-
-from .wrapper import Sequential
+try:
+    from .wrapper import Sequential
+except Exception:
+    from wrapper import Sequential
 from itertools import zip_longest
 from collections import ChainMap
 import random
@@ -20,9 +22,9 @@ class Cached(type):
             return obj
 
 class Operation(metaclass = Cached):
-    _parameters = {}
-    _random_parameters = {}
     def __init__(self, **kwargs):
+        self._parameters = {}
+        self._random_parameters = {}
         for parameter, value in kwargs.items():
             if parameter.startswith('r_'):
                 self._random_parameters[parameter[2:]] = value
@@ -30,10 +32,9 @@ class Operation(metaclass = Cached):
                 self._parameters[parameter] = value
         # for name, value in ChainMap(dict(zip_longest(self._fields, args)), kwargs).items():
         #     setattr(self, name, value)
-        print(self._parameters, self._random_parameters)
 
     def __str__(self):
-        return '{} {}'.format(self.__class__.__name__, self.__dict__)
+        return '{} {} {}'.format(self.__class__.__name__, self._random_parameters, self._parameters)
 
     def draw_sample(self):
         for i in self._fields:
@@ -49,15 +50,36 @@ class Operation(metaclass = Cached):
                 setattr(self, parameter, random.randint(value[0], value[1]))
 
     def call(self, inputs, **kwargs):
+        # parameters are image(np.ndarray)
         if isinstance(inputs, np.ndarray):
             self._instantiate_parameters()
             output = self.perform_on_image(inputs, **kwargs)
             return output
+        # parameters are list(multi image)
+        elif isinstance(inputs, list):
+            if 'sync' in kwargs and kwargs['sync']:
+                pass
+            
+            self._instantiate_parameters()
+            return self.perform_on_images(inputs)
         else:
+        # parameters are another Operation or Wrapper
             return Sequential(self, inputs)
+    
+    def perform_on_images(self, imgs, sync = True):
+        outputs = [self.perform_on_image(i) for i in imgs]
+        return outputs
 
     def perform_on_image(self, img):
         raise NotImplementedError()
 
     def __call__(self, inputs, **kwargs):
         return self.call(inputs, **kwargs)
+
+
+if __name__ == '__main__':
+    # test cache
+    op1 = Operation(test1 = 1, test2 = 2)
+    op2 = Operation(test2 = 2, test1 = 1)
+    op3 = Operation(test1 = 2, test2 = 2)
+    print(op1 == op2, op1 == op3)

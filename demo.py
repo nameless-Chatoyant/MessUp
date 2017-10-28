@@ -14,9 +14,13 @@ import os
 #     # img = Resize(None, (0.8, 1.2),(0.8, 1.2))(img)
     
 #     misc.imsave('icons_out/'+name, img)
-
+rotate = Rotate(r_degree = (-20, -20))
+op = Distort(grid_w = 3, grid = 3, magnitude = 3)
+op2 = op(rotate)
+print(rotate)
+print(op, op2)
 img = misc.imread('test.png')
 print(img.shape)
-img = Rotate(r_degree = (-20, -20))(img)
+img = rotate(img)
 print(img.shape)
 misc.imsave('out.png', img)

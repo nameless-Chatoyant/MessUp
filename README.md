@@ -41,6 +41,9 @@ class Custom(Operation):
         return res
 ```
 
+Any `perform_on_image` function including random operations MAY NOT produce same result on multiply images.
+
+
 
 ## Digital Docs to Natural Scenes
 

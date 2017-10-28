@@ -27,7 +27,7 @@ class Wrapper(metaclass = Cached):
     def __call__(self, inputs, **kwargs):
         return self.call(inputs, **kwargs)
     def __str__(self):
-        txt = self.__class__.__name__ + '\n' + '\n'.join(str(i) for i in self.operations)
+        txt = self.__class__.__name__ + '\n' + '\n'.join('    ' + str(i) for i in self.operations)
         return txt
 
 
