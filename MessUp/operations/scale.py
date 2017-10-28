@@ -12,12 +12,12 @@ class Resize(Operation):
         if self.dsize:
             d_h, d_w = self.dsize
             if d_h is not None and d_w is not None:
-                res = cv2.resize(img, self.dsize)
+                res = cv2.resize(img, (d_w, d_h))
             elif d_h is None and d_w is not None:
-                scale = d_w / w
+                scale = w / d_w
                 res = cv2.resize(img, None, fx=scale, fy=scale)
             elif d_h is not None and d_w is None:
-                scale = d_h / h
+                scale = h / d_h
                 res = cv2.resize(img, None, fx=scale, fy=scale)
             else:
                 print('?????')
