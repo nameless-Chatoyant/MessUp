@@ -24,9 +24,14 @@ class Crop_customed_doodles(Operation):
         crop_h, crop_w = self.crop_px
         if h < crop_h or w < crop_w:
             raise RuntimeError('Shape of cropping image must be larger than `crop_px`, ({}, {}) < ({}, {})'.format(h, w, *self.crop_px))
-        
-        h_start = random.randint(0, h - crop_h - 1)
-        w_start = random.randint(0, w - crop_w - 1)
+        if h - crop_h - 1 > 0:
+            h_start = random.randint(0, h - crop_h - 1)
+        else:
+            h_start = 0
+        if w - crop_w - 1 > 0:
+            w_start = random.randint(0, w - crop_w - 1)
+        else:
+            w_start = 0
 
         res = [i[h_start:h_start + crop_h, w_start:w_start + crop_w] for i in imgs]
         
