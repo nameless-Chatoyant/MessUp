@@ -8,7 +8,7 @@ import random
 
 
 
-class Crop_customed_doodles(Operation):
+class Doodles_Crop(Operation):
     _fields = ['crop_px']
     def perform_on_images(self, imgs):
         def are_same_shape(shapes):
@@ -27,14 +27,15 @@ class Crop_customed_doodles(Operation):
         
         h_start = random.randint(0, h - crop_h - 1)
         w_start = random.randint(0, w - crop_w - 1)
+        h_end = random.randint(h_start + crop_h, h - 1)
+        w_end = random.randint(w_start + crop_w, w - 1)
 
-        res = [i[h_start:h_start + crop_h, w_start:w_start + crop_w] for i in imgs]
+        res = [i[h_start:h_end, w_start:w_end] for i in imgs]
         
         return res
-
 
 if __name__ == '__main__':
     img1 = np.ones((64,32))
     img2 = np.zeros((64,32))
-    res1, res2 = Crop_customed_doodles(crop_px = (30, 30))([img1, img2])
+    res1, res2 = Doodles_Crop(crop_px = (30, 30))([img1, img2])
     print(res1.shape, res2.shape)
