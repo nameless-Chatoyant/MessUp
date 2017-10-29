@@ -14,7 +14,9 @@ class Cached(type):
     
     def __call__(self, *args, **kwargs):
         # TODO: kwargs
-        if args in self.__cache:
+        assert len(args) == 0
+        # TODO: before perfect
+        if False: # args in self.__cache:
             return self.__cache[args]
         else:
             obj = super().__call__(*args, **kwargs)
@@ -48,12 +50,15 @@ class Operation(metaclass = Cached):
                 setattr(self, parameter, random.uniform(value[0], value[1]))
             else:
                 setattr(self, parameter, random.randint(value[0], value[1]))
-
+        for parameter in self._fields:
+            if parameter not in self.__dict__:
+                self.__dict__['parameter'] = None
     def call(self, inputs, **kwargs):
         # parameters are image(np.ndarray)
         if isinstance(inputs, np.ndarray):
             self._instantiate_parameters()
             output = self.perform_on_image(inputs, **kwargs)
+            # print(len(output))
             return output
         # parameters are list(multi image)
         elif isinstance(inputs, list):
