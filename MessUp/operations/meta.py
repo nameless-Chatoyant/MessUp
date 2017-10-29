@@ -34,6 +34,9 @@ class Operation(metaclass = Cached):
                 self._parameters[parameter] = value
         # for name, value in ChainMap(dict(zip_longest(self._fields, args)), kwargs).items():
         #     setattr(self, name, value)
+        for parameter in self._fields:
+            if parameter not in self._parameters:
+                self._parameters[parameter] = None
 
     def __str__(self):
         return '{} {} {}'.format(self.__class__.__name__, self._random_parameters, self._parameters)
@@ -50,9 +53,6 @@ class Operation(metaclass = Cached):
                 setattr(self, parameter, random.uniform(value[0], value[1]))
             else:
                 setattr(self, parameter, random.randint(value[0], value[1]))
-        for parameter in self._fields:
-            if parameter not in self.__dict__:
-                self.__dict__['parameter'] = None
     def call(self, inputs, **kwargs):
         # parameters are image(np.ndarray)
         if isinstance(inputs, np.ndarray):
